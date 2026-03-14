@@ -1,29 +1,37 @@
 package jm.task.core.jdbc.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
 
-@Table
+@Entity
+@Table(name = "users")
 public class User {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column
+    @Column(name = "name")
     private String name; //Имя
 
-    @Column
+    @Column(name = "lastname")
     private String lastName;  //Фамилия
 
-    @Column
+    @Column(name = "age")
     private Byte age;  // Сколько лет.
 
-    public User() {
+
+    public User(){
 
     }
 
-    public User(String name, String lastName, Byte age) {
+    public User(String name,String lastName,byte age) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
