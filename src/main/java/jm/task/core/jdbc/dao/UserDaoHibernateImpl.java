@@ -17,18 +17,15 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        String sql = """
-                CREATE TABLE IF NOT EXISTS users(
-                id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                name VARCHAR(40),
-                lastname VARCHAR(40), age TINYINT)""";
-
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
-            session.createNativeQuery(sql).executeUpdate();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS users(\n" +
+                    "                id BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "                name VARCHAR(40),\n" +
+                    "                lastname VARCHAR(40), age TINYINT)").executeUpdate();
             transaction.commit();
             System.out.println("БД успешно создана");
         } catch (Exception e) {
@@ -43,15 +40,13 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        String sql = """
-                DROP TABLE IF EXISTS users
-                """;
+
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
-            session.createNativeQuery(sql).executeUpdate();
+            session.createSQLQuery("DROP TABLE IF EXISTS users").executeUpdate();
             transaction.commit();
             System.out.println("БД успешна удалена");
         } catch (Exception e) {
@@ -71,12 +66,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try {
             transaction = session.beginTransaction();
-            User user = new User(name,lastName,age);
+            User user = new User(name, lastName, age);
             session.save(user);
             System.out.println("Пользователь успешно добавлен");
             transaction.commit();
-        } catch (Exception e){
-            if (transaction != null){
+        } catch (Exception e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             throw new RuntimeException(e);
@@ -93,12 +88,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try {
             transaction = session.beginTransaction();
-            User user = session.get(User.class,id);
+            User user = session.get(User.class, id);
             session.delete(user);
             transaction.commit();
             System.out.println("Пользователь успешно удален по ID");
-        }catch (Exception e){
-            if (transaction != null){
+        } catch (Exception e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             throw new RuntimeException(e);
@@ -118,8 +113,8 @@ public class UserDaoHibernateImpl implements UserDao {
             userList = session.createQuery("FROM User", User.class).list();
             transaction.commit();
             System.out.println("Пользователи успешно получены");
-        }catch (Exception e){
-            if (transaction != null){
+        } catch (Exception e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             throw new RuntimeException(e);
